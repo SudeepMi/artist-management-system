@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('musics', function (Blueprint $table) {
             $table->id();
             $table->biginteger('artist_id')->unsigned();
+            $table->string('title');
+            $table->string('album_name');
+            $table->enum('genre',['rnb', 'country', 'classic', 'rock','jazz']);
             $table->foreign('artist_id', 'musics_artist_id_foreign')->references('id')->on('artists')->onDelete('cascade');
             $table->timestamps();
         });

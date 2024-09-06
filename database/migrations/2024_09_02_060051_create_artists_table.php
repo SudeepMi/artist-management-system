@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->datetime('dob');
-            $table->enum('gender',['m','f','o']);
+            $table->enum('gender', ['m', 'f', 'o']);
             $table->year('first_release_year');
+            $table->biginteger('user_id')->unsigned();
             $table->unsignedBigInteger('no_of_albums_released');
             $table->foreign('user_id', 'artist_user_id_foreign')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

@@ -43,6 +43,6 @@ class AdminAuthMiddleware
         if (Auth::user()) {
             Auth::logout();
         }
-        return redirect('/admin/login');
+        return redirect('/login');
     }
 }

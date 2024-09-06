@@ -19,20 +19,18 @@ class AdminAuthMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        //dd(Auth::user());
-        if (Auth::user() && (Auth::user()->hasRole('admin') || Auth::user()->hasRole('sub-admin'))) {
-            if (Auth::user()->hasRole('sub-admin')) {
-                $routeName = Route::currentRouteName();
-                if (!Auth::user()->hasPermission($routeName)) {
-                    if ($request->ajax()) {
-                        $data['title']   = "Auth Error";
-                        $data['message'] = 'Permission denied!';
-                        $data['data']    = $routeName;
-                        return response($data, 403);
-                    }
-                    abort(403);
+        if (Auth::user() && (Auth::user()->hasRole('admin') || Auth::user()->hasRole('artist_manager') || Auth::user()->hasRole('artist'))) {
+            $routeName = Route::currentRouteName();
+            if (!Auth::user()->hasPermission($routeName)) {
+                if ($request->ajax()) {
+                    $data['title']   = "Auth Error";
+                    $data['message'] = 'Permission denied!';
+                    $data['data']    = $routeName;
+                    return response($data, 403);
                 }
+                abort(403);
             }
+
             return $next($request);
         }
         Session::flash(

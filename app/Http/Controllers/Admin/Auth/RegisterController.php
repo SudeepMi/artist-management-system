@@ -42,8 +42,6 @@ class RegisterController extends Controller
             'phone.required' => 'The phone number field is mandatory.',
             'dob.required' => 'The date of birth field is mandatory.',
             'dob.date' => 'The date of birth must be a valid date.',
-            'role.required' => 'The role field is mandatory.',
-            'role.in' => 'Invalid role selected.',
             'gender.required' => 'The gender field is mandatory.',
             'gender.in' => 'Invalid gender selection.',
             'address.required' => 'The address field is mandatory.',

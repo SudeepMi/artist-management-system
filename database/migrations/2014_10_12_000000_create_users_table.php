@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('password');
             $table->string('phone');
             $table->datetime('dob');
-            $table->enum('role', ['super_admin','artist_manager','artist']);
-            $table->enum('gender', ['m','f','0']);
+            $table->enum('role', ['super_admin','artist_manager','artist'])->default('super_admin');
+            $table->enum('gender', ['m','f','o']);
             $table->string('address');
             $table->rememberToken();
             $table->timestamps();

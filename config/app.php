@@ -168,6 +168,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+    
     ])->toArray(),
 
     /*
@@ -184,5 +185,22 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
+
+
+    'permissions' => [
+        'super_admin' => [
+            'dashboard.index',
+            'users.index',
+            'users.create',
+            'users.store',
+            'users.edit',
+            'users.update',
+            'users.destroy'
+        ],
+        'artist_manager' => [],
+        'artist' => [
+
+        ],
+    ],
 
 ];

@@ -19,9 +19,9 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    public const HOME = '/dashboard';
 
-    public const ADMIN_HOME = '/admin/dashboard';
+    public const ADMIN_HOME = '/dashboard';
 
     protected $namespace = 'App\Http\Controllers';
 
@@ -66,6 +66,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function requireRouteFiles($path): void
     {
         $routeFiles = File::allFiles(base_path('routes/' . $path));
+       
         foreach ($routeFiles as $file) {
             require_once $file->getRealPath();
         }

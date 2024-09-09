@@ -195,7 +195,14 @@ return [
             'users.store',
             'users.edit',
             'users.update',
-            'users.destroy'
+            'users.destroy',
+            'artists.index',
+            'artists.create',
+            'artists.store',
+            'artists.edit',
+            'artists.update',
+            'artists.destroy',
+            
         ],
         'artist_manager' => [],
         'artist' => [

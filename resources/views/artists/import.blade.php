@@ -11,7 +11,7 @@
             <div id="drop-zone" class="mt-1 flex justify-center items-center p-4 border-2 border-dashed rounded-md text-gray-600 hover:border-blue-500 hover:text-blue-500 cursor-pointer">
                 <p id="drop-zone-text">Drag and drop your file here or click to upload</p>
             </div>
-            <input type="file" id="file-upload" name="file" accept=".csv, .xlsx, .xls" class="hidden" required>
+            <input type="file" id="file-upload" name="file" accept=".csv" class="hidden" required>
 
             <!-- File Name Display -->
             <p id="file-name" class="mt-2 text-sm text-gray-500 hidden"></p>

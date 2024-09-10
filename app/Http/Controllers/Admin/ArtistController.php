@@ -101,8 +101,10 @@ class ArtistController extends Controller
     public function importPost(Request $request)
     {
         $file = $request->file('file');
-        $fileContents = file($file->getPathname());
-
+        $filePath = $request->file('file')->get();
+        dd($filePath);
+        $fileContents = file($request->file('file')->path());
+        dd($fileContents);
         foreach ($fileContents as $line) {
             $data = str_getcsv($line);
             dd($data);

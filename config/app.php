@@ -168,7 +168,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-    
+
     ])->toArray(),
 
     /*
@@ -202,12 +202,22 @@ return [
             'artists.edit',
             'artists.update',
             'artists.destroy',
-            
-        ],
-        'artist_manager' => [],
-        'artist' => [
+            'artists.import',
+            'artists.import.save',
 
         ],
+        'artist_manager' => [
+            'dashboard.index',
+            'artists.index',
+            'artists.create',
+            'artists.store',
+            'artists.edit',
+            'artists.update',
+            'artists.destroy',
+            'artists.import',
+            'artists.import.save',
+        ],
+        'artist' => [],
     ],
 
 ];

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Schema;
 
 class ArtistController extends Controller
 {
@@ -124,5 +126,86 @@ class ArtistController extends Controller
             'no_of_albums_released' => 'required|integer|min:0',
             'email' => 'required|email',
         ])->validate();
+    }
+
+    public function export()
+    {
+        return view('artists.export');
+    }
+
+    public function exportPost(Request $request)
+    {
+        // Validate the request input
+        $request->validate([
+            'count' => 'required|in:10,25,50,100,all',
+            'columns' => 'required|array',
+            'columns.*' => 'in:name,dob,gender,first_release_year,no_of_albums_released,email,all',
+        ]);
+
+        // Retrieve the selected columns and count from the request
+        $columns = $request->input('columns');
+        $count = $request->input('count');
+
+        // Handle 'all' columns option
+        if (in_array('all', $columns)) {
+            // Fetch all the column names of the 'artists' table
+            $columns = Schema::getColumnListing('artists');
+        }
+
+        // Build the SQL query with selected columns
+        $query = 'SELECT ' . implode(',', $columns) . ' FROM artists';
+
+        // Apply the count limit if not exporting all records
+        if ($count !== 'all') {
+            $query .= ' LIMIT ' . intval($count);
+        }
+
+        // Execute the raw SQL query and fetch the results
+        $artists = DB::select($query);
+
+        // Generate the CSV content
+        $csvContent = $this->generateCsvContent($artists, $columns);
+
+        // Return the CSV file as a download
+        return Response::make($csvContent, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="artists_export.csv"',
+        ]);
+    }
+
+    /**
+     * Generate CSV content from the raw query result.
+     *
+     * @param  array  $artists
+     * @param  array  $columns
+     * @return string
+     */
+    protected function generateCsvContent($artists, $columns)
+    {
+        // Open a temporary memory file to write the CSV
+        $handle = fopen('php://temp', 'r+');
+
+        // Add the header row
+        fputcsv($handle, $columns);
+
+        // Add the artist rows
+        foreach ($artists as $artist) {
+            $row = [];
+            foreach ($columns as $column) {
+                $row[] = $artist->$column;
+            }
+            fputcsv($handle, $row);
+        }
+
+        // Rewind the file to the beginning
+        rewind($handle);
+
+        // Read the content from the file
+        $csvContent = stream_get_contents($handle);
+
+        // Close the file
+        fclose($handle);
+
+        return $csvContent;
     }
 }

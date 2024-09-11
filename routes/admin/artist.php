@@ -11,3 +11,5 @@ Route::delete('/artists/{artist}/delete', 'ArtistController@destroy')->name('art
 Route::get('/artists/{artist}/songs', 'ArtistController@artistSong')->name('artists.songs');
 Route::get('/artists/import', 'ArtistController@import')->name('artists.import');
 Route::post('/artists/import', 'ArtistController@importPost')->name('artists.import.save');
+Route::get('/artists/export', 'ArtistController@export')->name('artists.export');
+Route::post('/artists/export', 'ArtistController@exportPost')->name('artists.export.save');

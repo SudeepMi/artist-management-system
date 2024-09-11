@@ -204,6 +204,8 @@ return [
             'artists.destroy',
             'artists.import',
             'artists.import.save',
+            'artists.export',
+            'artists.export.save'
 
         ],
         'artist_manager' => [

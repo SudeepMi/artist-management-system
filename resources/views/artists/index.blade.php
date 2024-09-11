@@ -7,7 +7,7 @@
         <h2 class="text-lg font-semibold">Artist Records</h2>
         <div>
             <a href="{{ route('artists.import') }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Import</a>
-            <a href="{{ route('artists.create') }}" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Export</a>
+            <a href="{{ route('artists.export') }}" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Export</a>
             <a href="{{ route('artists.create') }}" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">+ Create New Artist</a>
         </div>
 

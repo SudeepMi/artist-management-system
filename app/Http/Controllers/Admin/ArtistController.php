@@ -36,27 +36,27 @@ class ArtistController extends Controller
     }
     public function store(Request $request)
     {
-        // Validate the request
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'dob' => 'required|date',
-            'gender' => 'required|in:m,f,o',
-            'first_release_year' => 'required|integer|between:1900,' . date('Y'),
-            'no_of_albums_released' => 'required|integer|min:0',
-            'email' => 'required',
-        ]);
+        $this->createArtist($request->all());
+
+        return redirect()->route('artists.index')->with('success', 'Artist created successfully.');
+    }
+
+    protected function createArtist($request)
+    {
+
+        $this->validateRow($request);
 
         DB::statement(
             "INSERT INTO users (first_name, last_name, email, password, phone, dob, gender, address, role, created_at, updated_at) 
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
-                $request->input('name'), // first_name
+                $request['name'], // first_name
                 '', // last_name
-                $request->input('email'),
+                $request['email'],
                 Hash::make('password'), // password
                 '', // phone
                 now(), // dob
-                $request->gender, // gender
+                $request['gender'], // gender
                 '', // address
                 'artist', // role
                 now(), // created_at
@@ -64,26 +64,22 @@ class ArtistController extends Controller
             ]
         );
 
-        // Get the last inserted user ID
         $userId = DB::select('SELECT LAST_INSERT_ID() AS id')[0]->id;
 
-        // Insert artist data using raw query
         DB::statement(
             "INSERT INTO artists (name, dob, gender, first_release_year, user_id, no_of_albums_released, created_at, updated_at) 
          VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             [
-                $request->input('name'),
-                $request->input('dob'),
-                $request->input('gender'),
-                $request->input('first_release_year'),
+                $request['name'],
+                $request['dob'],
+                $request['gender'],
+                $request['first_release_year'],
                 $userId,
-                $request->input('no_of_albums_released'),
+                $request['no_of_albums_released'],
                 now(), // created_at
                 now() // updated_at
             ]
         );
-
-        return redirect()->route('artists.index')->with('success', 'Artist created successfully.');
     }
 
     public function show($id) {}
@@ -101,15 +97,32 @@ class ArtistController extends Controller
     public function importPost(Request $request)
     {
         $file = $request->file('file');
-        $filePath = $request->file('file')->get();
-        dd($filePath);
-        $fileContents = file($request->file('file')->path());
-        dd($fileContents);
-        foreach ($fileContents as $line) {
-            $data = str_getcsv($line);
-            dd($data);
+        $fileContents = file($file->path());
+        $header = str_getcsv($fileContents[0]);
+        for ($i = 1; $i < count($fileContents); $i++) {
+            $row = str_getcsv($fileContents[$i]);
+
+            // Map the CSV data to an associative array with headers as keys
+            $rowData = array_combine($header, $row);
+
+            // Validate and insert each row into the database
+            $validatedData = $this->validateRow($rowData);
+            $this->createArtist($validatedData);
         }
 
         return redirect()->back()->with('success', 'CSV file imported successfully.');
+    }
+
+    protected function validateRow($row)
+    {
+        // Validate each row using Laravel's validator
+        return validator($row, [
+            'name' => 'required|string|max:255',
+            'dob' => 'required|date',
+            'gender' => 'required|in:m,f,o',
+            'first_release_year' => 'required|integer|between:1900,' . date('Y'),
+            'no_of_albums_released' => 'required|integer|min:0',
+            'email' => 'required|email',
+        ])->validate();
     }
 }

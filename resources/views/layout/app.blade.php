@@ -16,14 +16,28 @@
         @include('layout.partials.nav')
 
         <div class="flex flex-grow">
-
-            <!-- Main Content -->
             <main class="flex-grow p-6 bg-white">
+                <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
+                    <span class="text-gray-600 text-sm font-medium">Logged In as</span>
+                    <div class="mt-2 flex items-center space-x-2">
+                        <p class="text-lg font-semibold text-gray-800">{{ Auth::user()->first_name }}</p>
+                        <p class="text-lg font-semibold text-blue-600">|</p>
+                        <p class="text-lg font-semibold text-gray-800">{{ Auth::user()->getOriginal('role') }}</p>
+                    </div>
+                </div>
+
                 <div class="mb-4 border-b border-gray-200">
                     <nav class="flex space-x-4">
-                        <a href="/dashboard" class="py-2 px-4 {{ Request::segment(1) =='dashboard' ? 'text-blue-600 border-b-2 border-blue-600 font-semibold' :'text-gray-600 hover:text-blue-600' }}">Dashboard</a>
-                        <a href="/users" class="py-2 px-4 {{ Request::segment(1) =='users' ? 'text-blue-600 border-b-2 border-blue-600 font-semibold' :'text-gray-600 hover:text-blue-600' }}">User</a>
-                        <a href="/artists" class="py-2 px-4 {{ Request::segment(1) =='artists' ? 'text-blue-600 border-b-2 border-blue-600 font-semibold' :'text-gray-600 hover:text-blue-600' }}">Artist</a>
+                        <a href="/dashboard" class="py-2 px-4 {{ Request::segment(1) == 'dashboard' ? 'text-blue-600 border-b-2 border-blue-600 font-semibold' : 'text-gray-600 hover:text-blue-600' }}">Dashboard</a>
+                        @if(Auth::user()->getOriginal('role') == "artist")
+                        @php
+                        $artistId = DB::selectOne('SELECT * FROM artists WHERE user_id = ?', [Auth::user()->getOriginal('id')]);
+                        @endphp
+                        <a href="{{ route('songs.index', $artistId->id) }}" class="py-2 px-4 {{ Request::segment(3) == 'songs' ? 'text-blue-600 border-b-2 border-blue-600 font-semibold' : 'text-gray-600 hover:text-blue-600' }}">My Songs</a>
+                        @else
+                        <a href="/users" class="py-2 px-4 {{ Request::segment(1) == 'users' ? 'text-blue-600 border-b-2 border-blue-600 font-semibold' : 'text-gray-600 hover:text-blue-600' }}">User</a>
+                        <a href="/artists" class="py-2 px-4 {{ Request::segment(1) == 'artists' ? 'text-blue-600 border-b-2 border-blue-600 font-semibold' : 'text-gray-600 hover:text-blue-600' }}">Artist</a>
+                        @endif
                     </nav>
                 </div>
 
@@ -42,6 +56,17 @@
                     <div class="px-4 py-2 bg-white text-green-700">
                         {{ $message }}
                     </div>
+                </div>
+                @endif
+
+                @if($errors->any())
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative max-w-4xl m-auto" role="alert">
+                    <strong class="font-bold">Whoops! Something went wrong.</strong>
+                    <ul class="mt-3 list-disc list-inside text-sm text-red-600">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
                 @endif
                 <!-- Tab Navigation -->

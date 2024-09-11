@@ -214,6 +214,7 @@ return [
             'songs.index',
         ],
         'artist' => [
+            'dashboard.index',
             'songs.index',
             'songs.create',
             'songs.store',

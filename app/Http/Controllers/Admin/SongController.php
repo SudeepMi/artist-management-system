@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Music;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -63,5 +64,49 @@ class SongController extends Controller
         );
 
         return redirect()->route('songs.index', $validatedData['artist_id'])->with('success', 'Song created successfully.');
+    }
+
+    public function edit($id)
+    {
+
+        $song = DB::selectOne("SELECT * FROM songs WHERE id =?", [$id]);
+        return view('songs.edit', compact('song'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Validate the request data
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'album_name' => 'required|string|max:255',
+            'genre' => 'required|in:rnb,country,classic,rock,jazz',
+            'artist_id' => 'required',
+        ]);
+
+        // Retrieve the validated input data
+        $title = $request->input('title');
+        $album_name = $request->input('album_name');
+        $genre = $request->input('genre');
+
+        // Update the song using a raw query
+        $updated = DB::update('
+        UPDATE songs 
+        SET title = ?, album_name = ?, genre = ? 
+        WHERE id = ?
+    ', [$title, $album_name, $genre, $id]);
+
+        // Check if the update was successful
+        if ($updated) {
+            return redirect()->route('songs.index', [$request->artist_id])->with('success', 'Song updated successfully.');
+        } else {
+            return redirect()->back()->with('error', 'Failed to update song.');
+        }
+    }
+
+    public function destroy($id)
+    {
+        DB::delete('DELETE FROM songs WHERE id =?', [$id]);
+
+        return redirect()->back()->with('success', 'Song deleted successfully.');
     }
 }

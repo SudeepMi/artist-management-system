@@ -208,7 +208,10 @@ return [
             'artists.export.save',
             'songs.index',
             'songs.create',
-            'songs.store'
+            'songs.store',
+            'songs.edit',
+            'songs.update',
+            'songs.destroy'
 
         ],
         'artist_manager' => [

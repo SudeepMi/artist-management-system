@@ -58,7 +58,7 @@
                             @method('DELETE')
                             <button type="submit" class="text-red-500 hover:text-red-700 transition">Delete</button>
                         </form>
-                        <a href="{{ route('artists.songs', $artist->id) }}" class="text-blue-500 hover:text-blue-700 transition ml-4">View Songs</a>
+                        <a href="{{ route('songs.index', $artist->id) }}" class="text-blue-500 hover:text-blue-700 transition ml-4">View Songs</a>
                     </td>
                 </tr>
                 @endforeach

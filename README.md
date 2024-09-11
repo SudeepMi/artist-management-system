@@ -114,9 +114,11 @@ This Laravel project is a web application designed for managing users, artists, 
    - **Create Artist**: Create a new artist record (Role: artist_manager).
    - **Update/Delete Artist**: Update or delete existing artist records (Role: artist_manager).
    - **CSV Import/Export**: Import and export artist data via CSV (Role: artist_manager).
-   - **Songs List**: Redirect to a screen with a list of songs for a particular artist (Roles: super_admin, artist_manager).
+   - **Songs List**: Redirect to a screen with a list of songs for a particular artist (Roles: super_admin, artist_manager)
+
 
    - **Songs for Artist**
+     - **Login**: Artist Email and Default Password (password)
      - **List Songs**: List songs for the artist (Roles: super_admin, artist_manager, artist).
      - **Create Song**: Create a new song record for the artist (Role: artist).
      - **Update/Delete Song**: Update or delete existing song records for the artist (Role: artist).

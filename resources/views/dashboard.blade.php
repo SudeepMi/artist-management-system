@@ -1,82 +1,61 @@
 @extends('layout.app')
+
 @section('main')
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <h2 class="text-3xl font-bold mb-6">Stats Overview</h2>
 
-<div id="userTab">
-    <!-- User Actions (Visible for Super Admin only) -->
-    <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-semibold">User Records</h2>
-        <a href="{{ route('users.create')}}" class="bg-blue-500 text-white px-4 py-2 rounded-lg">+ Create New User</a>
+    <!-- Overall Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-blue-100 p-4 rounded-lg shadow-md text-center">
+            <h3 class="text-xl font-semibold text-blue-800">Total Users</h3>
+            <p class="text-2xl font-bold text-blue-600">{{ $totalUsers }}</p>
+        </div>
+        <div class="bg-green-100 p-4 rounded-lg shadow-md text-center">
+            <h3 class="text-xl font-semibold text-green-800">Artist Managers</h3>
+            <p class="text-2xl font-bold text-green-600">{{ $totalArtistManagers }}</p>
+        </div>
+        <div class="bg-yellow-100 p-4 rounded-lg shadow-md text-center">
+            <h3 class="text-xl font-semibold text-yellow-800">Total Artists</h3>
+            <p class="text-2xl font-bold text-yellow-600">{{ $totalArtists }}</p>
+        </div>
+        <div class="bg-red-100 p-4 rounded-lg shadow-md text-center">
+            <h3 class="text-xl font-semibold text-red-800">Total Songs</h3>
+            <p class="text-2xl font-bold text-red-600">{{ $totalSongs }}</p>
+        </div>
     </div>
 
-    <!-- User List -->
-    <table class="w-full text-left table-auto">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="px-4 py-2">Name</th>
-                <th class="px-4 py-2">Email</th>
-                <th class="px-4 py-2">Role</th>
-                <th class="px-4 py-2">Actions</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200">
-            <!-- Example User Row -->
-            <tr>
-                <td class="px-4 py-2">John Doe</td>
-                <td class="px-4 py-2">john@example.com</td>
-                <td class="px-4 py-2">super_admin</td>
-                <td class="px-4 py-2">
-                    <button class="text-yellow-500 mr-2">Edit</button>
-                    <button class="text-red-500">Delete</button>
-                </td>
-            </tr>
-            <!-- More rows -->
-        </tbody>
-    </table>
-
-    <!-- Pagination -->
-    <div class="flex justify-end mt-4">
-        <button class="bg-gray-200 px-3 py-1 rounded-md">Previous</button>
-        <button class="bg-gray-200 px-3 py-1 rounded-md ml-2">Next</button>
-    </div>
-</div>
-
-<!-- Artist Tab Content -->
-<div id="artistTab" class="hidden">
-    <!-- Artist Actions (Artist Manager Access) -->
-    <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-semibold">Artist Records</h2>
-        <button class="bg-blue-500 text-white px-4 py-2 rounded-lg">+ Create New Artist</button>
+    <!-- Top 5 Artists by Song Count -->
+    <div class="bg-gray-100 p-4 rounded-lg shadow-md mb-8">
+        <h3 class="text-2xl font-semibold mb-4">Top 5 Artists by Song Count</h3>
+        <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="py-2 px-4 border-b text-left text-gray-600">Artist</th>
+                    <th class="py-2 px-4 border-b text-left text-gray-600">Songs Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($topArtists as $artist)
+                <tr>
+                    <td class="py-2 px-4 border-b text-gray-700">{{ $artist->artist_name}}</td>
+                    <td class="py-2 px-4 border-b text-gray-700">{{ $artist->song_count }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 
-    <!-- Artist List -->
-    <table class="w-full text-left table-auto">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="px-4 py-2">Name</th>
-                <th class="px-4 py-2">Genre</th>
-                <th class="px-4 py-2">Actions</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200">
-            <!-- Example Artist Row -->
-            <tr>
-                <td class="px-4 py-2">Jane Smith</td>
-                <td class="px-4 py-2">Pop</td>
-                <td class="px-4 py-2">
-                    <button class="text-yellow-500 mr-2">Edit</button>
-                    <button class="text-red-500">Delete</button>
-                    <button class="text-blue-500 ml-2">View Songs</button>
-                </td>
-            </tr>
-            <!-- More rows -->
-        </tbody>
-    </table>
-
-    <!-- Pagination -->
-    <div class="flex justify-end mt-4">
-        <button class="bg-gray-200 px-3 py-1 rounded-md">Previous</button>
-        <button class="bg-gray-200 px-3 py-1 rounded-md ml-2">Next</button>
+    <!-- Songs Count by Genre -->
+    <div class="bg-gray-100 p-4 rounded-lg shadow-md">
+        <h3 class="text-2xl font-semibold mb-4">Songs Count by Genre</h3>
+        <div class="space-y-2">
+            @foreach($songsByGenre as $genre)
+            <div class="flex justify-between py-2 px-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <span class="font-medium text-gray-700 capitalize">{{ ucfirst($genre->genre) }}</span>
+                <span class="text-gray-600">{{ $genre->song_count }} songs</span>
+            </div>
+            @endforeach
+        </div>
     </div>
 </div>
-
 @endsection

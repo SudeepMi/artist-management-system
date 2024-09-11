@@ -197,22 +197,7 @@ return [
             'users.update',
             'users.destroy',
             'artists.index',
-            'artists.create',
-            'artists.store',
-            'artists.edit',
-            'artists.update',
-            'artists.destroy',
-            'artists.import',
-            'artists.import.save',
-            'artists.export',
-            'artists.export.save',
             'songs.index',
-            'songs.create',
-            'songs.store',
-            'songs.edit',
-            'songs.update',
-            'songs.destroy'
-
         ],
         'artist_manager' => [
             'dashboard.index',
@@ -224,8 +209,18 @@ return [
             'artists.destroy',
             'artists.import',
             'artists.import.save',
+            'artists.export',
+            'artists.export.save',
+            'songs.index',
         ],
-        'artist' => [],
+        'artist' => [
+            'songs.index',
+            'songs.create',
+            'songs.store',
+            'songs.edit',
+            'songs.update',
+            'songs.destroy'
+        ],
     ],
 
 ];

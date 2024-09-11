@@ -21,6 +21,7 @@
             <main class="flex-grow p-6 bg-white">
                 <div class="mb-4 border-b border-gray-200">
                     <nav class="flex space-x-4">
+                        <a href="/dashboard" class="py-2 px-4 {{ Request::segment(1) =='dashboard' ? 'text-blue-600 border-b-2 border-blue-600 font-semibold' :'text-gray-600 hover:text-blue-600' }}">Dashboard</a>
                         <a href="/users" class="py-2 px-4 {{ Request::segment(1) =='users' ? 'text-blue-600 border-b-2 border-blue-600 font-semibold' :'text-gray-600 hover:text-blue-600' }}">User</a>
                         <a href="/artists" class="py-2 px-4 {{ Request::segment(1) =='artists' ? 'text-blue-600 border-b-2 border-blue-600 font-semibold' :'text-gray-600 hover:text-blue-600' }}">Artist</a>
                     </nav>

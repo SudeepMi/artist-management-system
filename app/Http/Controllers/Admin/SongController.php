@@ -75,7 +75,6 @@ class SongController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Validate the request data
         $request->validate([
             'title' => 'required|string|max:255',
             'album_name' => 'required|string|max:255',
@@ -83,19 +82,16 @@ class SongController extends Controller
             'artist_id' => 'required',
         ]);
 
-        // Retrieve the validated input data
         $title = $request->input('title');
         $album_name = $request->input('album_name');
         $genre = $request->input('genre');
 
-        // Update the song using a raw query
         $updated = DB::update('
         UPDATE songs 
         SET title = ?, album_name = ?, genre = ? 
         WHERE id = ?
     ', [$title, $album_name, $genre, $id]);
 
-        // Check if the update was successful
         if ($updated) {
             return redirect()->route('songs.index', [$request->artist_id])->with('success', 'Song updated successfully.');
         } else {

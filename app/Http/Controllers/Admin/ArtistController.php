@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Artist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -86,10 +87,48 @@ class ArtistController extends Controller
 
     public function show($id) {}
 
-    public function edit($id) {}
+    public function edit(Artist $artist)
+    {
+        return view('artists.edit', compact('artist'));
+    }
 
-    public function update(Request $request, $id) {}
+    public function update(Request $request, $id)
+    {
+        // Validate the request data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'dob' => 'required|date',
+            'gender' => 'required|in:m,f,o',
+            'first_release_year' => 'required|integer|min:1900|max:' . date('Y'),
+            'no_of_albums_released' => 'required|integer|min:0',
+        ]);
 
+        // Get the request data
+        $name = $request->input('name');
+        $dob = $request->input('dob');
+        $gender = $request->input('gender');
+        $first_release_year = $request->input('first_release_year');
+        $no_of_albums_released = $request->input('no_of_albums_released');
+
+        // Use a raw SQL query to update the artist in the database
+        DB::update(
+            '
+        UPDATE artists 
+        SET name = ?, dob = ?, gender = ?, first_release_year = ?, no_of_albums_released = ?, updated_at = NOW() 
+        WHERE id = ?',
+            [$name, $dob, $gender, $first_release_year, $no_of_albums_released, $id]
+        );
+
+        // Redirect or return a response
+        return redirect()->route('artists.index')->with('success', 'Artist updated successfully.');
+    }
+
+    public function destroy($id)
+    {
+        DB::delete('DELETE FROM artists WHERE id =?', [$id]);
+
+        return redirect()->route('artists.index')->with('success', 'Artist deleted successfully.');
+    }
 
     public function import()
     {
@@ -104,10 +143,8 @@ class ArtistController extends Controller
         for ($i = 1; $i < count($fileContents); $i++) {
             $row = str_getcsv($fileContents[$i]);
 
-            // Map the CSV data to an associative array with headers as keys
             $rowData = array_combine($header, $row);
 
-            // Validate and insert each row into the database
             $validatedData = $this->validateRow($rowData);
             $this->createArtist($validatedData);
         }
@@ -139,34 +176,26 @@ class ArtistController extends Controller
         $request->validate([
             'count' => 'required|in:10,25,50,100,all',
             'columns' => 'required|array',
-            'columns.*' => 'in:name,dob,gender,first_release_year,no_of_albums_released,email,all',
+            'columns.*' => 'in:name,dob,gender,first_release_year,no_of_albums_released,all',
         ]);
 
-        // Retrieve the selected columns and count from the request
         $columns = $request->input('columns');
         $count = $request->input('count');
 
-        // Handle 'all' columns option
         if (in_array('all', $columns)) {
-            // Fetch all the column names of the 'artists' table
             $columns = Schema::getColumnListing('artists');
         }
-
-        // Build the SQL query with selected columns
         $query = 'SELECT ' . implode(',', $columns) . ' FROM artists';
 
-        // Apply the count limit if not exporting all records
         if ($count !== 'all') {
             $query .= ' LIMIT ' . intval($count);
         }
 
-        // Execute the raw SQL query and fetch the results
+
         $artists = DB::select($query);
 
-        // Generate the CSV content
         $csvContent = $this->generateCsvContent($artists, $columns);
 
-        // Return the CSV file as a download
         return Response::make($csvContent, 200, [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="artists_export.csv"',
@@ -182,13 +211,11 @@ class ArtistController extends Controller
      */
     protected function generateCsvContent($artists, $columns)
     {
-        // Open a temporary memory file to write the CSV
+
         $handle = fopen('php://temp', 'r+');
 
-        // Add the header row
         fputcsv($handle, $columns);
 
-        // Add the artist rows
         foreach ($artists as $artist) {
             $row = [];
             foreach ($columns as $column) {
@@ -197,13 +224,8 @@ class ArtistController extends Controller
             fputcsv($handle, $row);
         }
 
-        // Rewind the file to the beginning
         rewind($handle);
-
-        // Read the content from the file
         $csvContent = stream_get_contents($handle);
-
-        // Close the file
         fclose($handle);
 
         return $csvContent;
